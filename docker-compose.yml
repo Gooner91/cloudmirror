@@ -1,13 +1,13 @@
 services:
   app:
+    container_name: cloudmirror-dev
     build: .
     working_dir: /app
     volumes:
       - ./:/app
       - gobin:/go/bin
       - gomodcache:/go/pkg/mod
-    command: ["go", "run", "main.go"]
-
+    command: tail -f /dev/null
 volumes:
   gomodcache:
   gobin:

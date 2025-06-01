@@ -1,0 +1,13 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o cloudmirror main.go"
+bin = "cloudmirror"
+include_ext = ["go", "tpl", "tmpl", "html"]
+exclude_dir = ["assets", "tmp", "vendor"]
+log = "stdout"
+
+[log]
+time = true
+color = "auto"

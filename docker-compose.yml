@@ -5,9 +5,9 @@ services:
     working_dir: /app
     volumes:
       - ./:/app
+      - ./credentials.json:/app/credentials.json:ro
       - gobin:/go/bin
       - gomodcache:/go/pkg/mod
-    command: tail -f /dev/null
 volumes:
   gomodcache:
   gobin:

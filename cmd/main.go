@@ -7,18 +7,12 @@ import (
 
 func main(){
 
-  service, error := google_drive.NewGoogleDriveClient()
+  service, error := google_drive.GoogleDriveService()
 
 	if error != nil {
-		fmt.Println("No files found.")
+		fmt.Println("Error fetching third party service object.")
 	}
 
-	service.ListFiles(10)
-	// if len(r.Files) == 0 {
-	// 	fmt.Println("No files found.")
-	// } else {
-	// 	for _, i := range r.Files {
-	// 		fmt.Printf("%s (%s)\n", i.Name, i.Id)
-	// 	}
-	// }
+	client := google_drive.GoogleDriveClient{Service: service}
+	client.ListFiles(10)
 }

@@ -9,4 +9,5 @@ RUN go install github.com/air-verse/air@latest
 
 COPY . .
 
+ENV PATH="/usr/local/go/bin:${PATH}"
 ENTRYPOINT [ "air" ]

@@ -3,7 +3,7 @@ module github.com/Gooner91/cloudmirror
 go 1.24.2
 
 require (
-	golang.org/x/oauth2 v0.30.0
+	golang.org/x/oauth2 v0.34.0
 	google.golang.org/api v0.237.0
 )
 

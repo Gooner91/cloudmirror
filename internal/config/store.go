@@ -23,11 +23,11 @@ func loadConfigList() (ConfigList, error) {
 		return ConfigList{}, nil
 	}
 
-	var cfg ConfigList
-	if err := json.Unmarshal(data, &cfg); err != nil {
+	var cfgList ConfigList
+	if err := json.Unmarshal(data, &cfgList); err != nil {
 		return nil, fmt.Errorf("decode config: %w", err)
 	}
-	return cfg, nil
+	return cfgList, nil
 }
 
 func Save(cfg Config) error {
@@ -53,6 +53,11 @@ func Save(cfg Config) error {
 	}
 
 	return nil
+}
+
+func Delete(cfg Config) error {
+	existing, err := loadConfigList()
+
 }
 
 func configPath() string {

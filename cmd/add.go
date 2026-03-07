@@ -5,16 +5,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	srcGlob string
-	dest string
-)
-
 var configAddCmd = &cobra.Command{
-	Use: "add",
+	Use:   "add",
 	Short: "Adds a mapping to the config",
-	Long: "Allows to add a source and destination glob",
+	Long:  "Allows to add a source and destination glob",
 	RunE: func(cmd *cobra.Command, args []string) error {
+		srcGlob, err := cmd.Flags().GetString("srcGlob")
+		if err != nil {
+			return err
+		}
+
+		dest, err := cmd.Flags().GetString("dest")
+		if err != nil {
+			return err
+		}
+
 		cfg := config.Config{
 			SrcGlob: srcGlob,
 			Dest:    dest,
@@ -24,11 +29,11 @@ var configAddCmd = &cobra.Command{
 	},
 }
 
-func init(){
+func init() {
 	configCmd.AddCommand(configAddCmd)
-	configAddCmd.Flags().StringVar(&srcGlob, "srcGlob", "", "Glob pattern for source directories/files (required)")
+	configAddCmd.Flags().String("srcGlob", "", "Glob pattern for source directories/files (required)")
 	configAddCmd.MarkFlagRequired("srcGlob")
-	configAddCmd.Flags().StringVar(&dest, "dest", "", "Destination path for the provided source")
+	configAddCmd.Flags().String("dest", "", "Destination path for the provided source")
 	configAddCmd.MarkFlagRequired("dest")
 
 }

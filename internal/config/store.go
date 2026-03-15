@@ -35,6 +35,11 @@ func Save(cfg Config) error {
 	if err != nil {
 		return err
 	}
+
+	if err := validateConfig(cfg, existing); err != nil {
+		return err
+	}
+
 	existing = append(existing, cfg)
 
 	return writeConfigList(existing)
@@ -46,14 +51,32 @@ func Delete(cfg Config) error {
 		return err
 	}
 
+	idx := findConfigIndex(cfg, existing)
+	if idx == -1 {
+		return fmt.Errorf("config mapping not found for srcGlob=%q dest=%q", cfg.SrcGlob, cfg.Dest)
+	}
+
+	updated := append(existing[:idx], existing[idx+1:]...)
+	return writeConfigList(updated)
+}
+
+func validateConfig(cfg Config, existing ConfigList) error {
+	idx := findConfigIndex(cfg, existing)
+	if idx != -1 {
+		return fmt.Errorf("config mapping already exists for srcGlob=%q dest=%q", cfg.SrcGlob, cfg.Dest)
+	}
+
+	return nil
+}
+
+func findConfigIndex(cfg Config, existing ConfigList) int {
 	for idx, persistedConfig := range existing {
 		if persistedConfig.Dest == cfg.Dest && persistedConfig.SrcGlob == cfg.SrcGlob {
-			updated := append(existing[:idx], existing[idx+1:]...)
-			return writeConfigList(updated)
+			return idx
 		}
 	}
 
-	return fmt.Errorf("config mapping not found for srcGlob=%q dest=%q", cfg.SrcGlob, cfg.Dest)
+	return -1
 }
 
 func writeConfigList(cfgList ConfigList) error {

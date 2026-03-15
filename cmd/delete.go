@@ -25,15 +25,15 @@ var configDeleteCmd = &cobra.Command{
 			Dest:    dest,
 		}
 
-		cfg
+		return config.Delete(cfg)
 
 	},
 }
 
 func init() {
 	configCmd.AddCommand(configDeleteCmd)
-	configDeleteCmd.Flags().StringVar("srcGlob", "", "Glob pattern for source directories/files (required)")
+	configDeleteCmd.Flags().String("srcGlob", "", "Glob pattern for source directories/files (required)")
 	configDeleteCmd.MarkFlagRequired("srcGlob")
-	configDeleteCmd.Flags().StringVar("dest", "", "Destination path for the provided source (required)")
+	configDeleteCmd.Flags().String("dest", "", "Destination path for the provided source (required)")
 	configDeleteCmd.MarkFlagRequired("dest")
 }

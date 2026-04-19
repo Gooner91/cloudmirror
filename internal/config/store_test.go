@@ -70,6 +70,56 @@ func TestSaveRejectsDuplicateConfig(t *testing.T) {
 	assertConfigListEqual(t, got, existing)
 }
 
+func TestSaveRejectsInvalidConfig(t *testing.T) {
+	testCases := []struct {
+		name    string
+		cfg     Config
+		wantErr string
+	}{
+		{
+			name:    "empty srcGlob",
+			cfg:     Config{SrcGlob: "", Dest: "/docs"},
+			wantErr: "srcGlob is required",
+		},
+		{
+			name:    "whitespace srcGlob",
+			cfg:     Config{SrcGlob: " \n\t ", Dest: "/docs"},
+			wantErr: "srcGlob is required",
+		},
+		{
+			name:    "empty dest",
+			cfg:     Config{SrcGlob: "/src/*.txt", Dest: ""},
+			wantErr: "dest is required",
+		},
+		{
+			name:    "whitespace dest",
+			cfg:     Config{SrcGlob: "/src/*.txt", Dest: " \n\t "},
+			wantErr: "dest is required",
+		},
+		{
+			name:    "invalid srcGlob pattern",
+			cfg:     Config{SrcGlob: "[", Dest: "/docs"},
+			wantErr: "invalid srcGlob pattern",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Setenv("XDG_CONFIG_HOME", t.TempDir())
+
+			err := Save(tc.cfg)
+			if err == nil {
+				t.Fatal("Save() error = nil, want validation error")
+			}
+			if !strings.Contains(err.Error(), tc.wantErr) {
+				t.Fatalf("Save() error = %q, want substring %q", err, tc.wantErr)
+			}
+
+			assertConfigFileMissing(t)
+		})
+	}
+}
+
 func TestSaveTreatsWhitespaceFileAsEmptyConfig(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", t.TempDir())
 
@@ -93,6 +143,15 @@ func TestSaveTreatsWhitespaceFileAsEmptyConfig(t *testing.T) {
 	got := readPersistedConfigList(t)
 	want := ConfigList{cfg}
 	assertConfigListEqual(t, got, want)
+}
+
+func assertConfigFileMissing(t *testing.T) {
+	t.Helper()
+
+	_, err := os.Stat(configPath())
+	if !os.IsNotExist(err) {
+		t.Fatalf("Stat() error = %v, want config file to be absent", err)
+	}
 }
 
 func readPersistedConfigList(t *testing.T) ConfigList {

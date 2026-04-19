@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func loadConfigList() (ConfigList, error) {
@@ -61,6 +62,20 @@ func Delete(cfg Config) error {
 }
 
 func validateConfig(cfg Config, existing ConfigList) error {
+	srcGlob := strings.TrimSpace(cfg.SrcGlob)
+	if srcGlob == "" {
+		return errors.New("srcGlob is required")
+	}
+
+	dest := strings.TrimSpace(cfg.Dest)
+	if dest == "" {
+		return errors.New("dest is required")
+	}
+
+	if _, err := filepath.Match(srcGlob, ""); err != nil {
+		return fmt.Errorf("invalid srcGlob pattern %q: %w", cfg.SrcGlob, err)
+	}
+
 	idx := findConfigIndex(cfg, existing)
 	if idx != -1 {
 		return fmt.Errorf("config mapping already exists for srcGlob=%q dest=%q", cfg.SrcGlob, cfg.Dest)

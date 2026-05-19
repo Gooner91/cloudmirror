@@ -40,9 +40,9 @@ Once mappings are registered, cloudmirror will resolve the globs, walk the match
 | CLI scaffolding (Cobra)     | Done          |
 | Config store (add/delete)   | Done          |
 | Config validation           | Done          |
-| Google Drive OAuth2 auth    | Done          |
-| Google Drive file listing   | Done (WIP)    |
-| Google Drive file upload    | In progress   |
+| Google Drive OAuth2 auth    | WIP          |
+| Google Drive file listing   | Not started   |
+| Google Drive file upload    | Not started   |
 | Sync command                | Not started   |
 | Periodic / scheduled sync   | Not started   |
 | Additional cloud backends   | Not started   |
